@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>프로젝트3의 기본원리</title>
+    </head>
+    <body>
+        <h1>동기와 비동기에 대한 간단한 이해</h1>
+        <h2>1. 자바스크립트의 구성 요소</h2>
+        <ul>
+            <li>
+                <h3>stack</h3>
+                자바스크립트 코드가 실행되면 실행될 명령들 (스택 프레임)이 쌓이는 장소. 스택에 새로운 프레임들이 들어오고 실행이 완료되면 나간다. 드럼통처럼 생겨서 First In Last Out 구조의 자료형이다.
+                (먼저 들어온 놈이 나중에 나가는 구조 ...)
+            </li>
+            <li style="list-style: none">
+                <img src="./1_런타임(큐,스텍).png" alt="런타임(큐,스텍)" />
+            </li>
+            <li>
+                <h3>Heap</h3>
+                동적으로 생성된 변수들을 메모리 heap에 가서 저장이 된다.
+            </li>
+            <li style="list-style: none">
+                <img src="./2_콜스텍.png" alt="콜스텍" />
+            </li>
+            <li>
+                <h3>테스크 큐(Queue)</h3>
+                웹 api로부터 받은 테스크를 큐에 저장해둔다. <br />
+                스택이 비어지면 이벤트 루프가 아이템을 꺼내다가 스택으로 올려준다.
+                <br />
+                First In First Out의 자료구조 형태이다. <br />
+            </li>
+            <li style="list-style: none">
+                <img src="./3_큐.png" alt="큐" />
+            </li>
+            <li>
+                <h3>Event Loop</h3>
+                스택과 큐 사이에서 흐름을 제어한다. <br />
+                이벤트 루프는 스택이 비어있는지를 확인하고, 비어있으면 큐에 있는 아이템을 꺼내다가 스택에 올려준다.
+            </li>
+            <li>
+                <h3>웹 api</h3>
+                Ajax 요청, setTimeout(), 이벤트 핸들러의 등록과 같이 웹 브라우저에서 제공하는 기능들을 말한다. <br />
+                이들은 자바스크립트의 쓰레드(스택)에서 작업이 이루어지는 것이 아닌 별도의 쓰레드에서 이루어진다.
+            </li>
+            <li>
+                <h3>setTimeout(함수, 시간)</h3>
+                Ajax, Axios, fetch : 클라이언트와 서버간에 데이터를 주고 받는 기술<br />
+                Event Handler : 클릭과 같은 이벤트를 핸들링 하는 함수들<br />
+            </li>
+            <li>
+                <h3>쓰레드 (Thread)</h3>
+                쓰레드란 실제로 작업을 실행하는 주체이다. <br />
+                쓰레드는 1개이거나 여러개일수 있다. <br />
+                자바스크립트는 싱글의 쓰레드만 있다. <br />
+                쓰레드가 1개이면 하나씩 밖에 일을 처리 못해서 동기적으로 일을 처리하게 된다. <br />
+                멀티 쓰레드라면 (1개 이상) 여러개의 작업을 병렬적으로 처리할 수 있다.<br />
+                자바스크립트는 싱글 쓰레드로 동기적 처리를 한다는 것을 필히 명심해야한다.
+            </li>
+            <li>
+                <h3>API를 부르는 방식</h3>
+                ajax, axios, fetch가 있다. <br />
+                이 중에는 fetch가 제일 간단하다. <br />
+                ajax, axios는 React.js에서 많이 사용되는 방식이기도 하다.
+            </li>
+            <li>
+                <h3>Promise</h3>
+                자바스크립트에서 비동기 동작을 다루는 ES6 최신 문법이다. <br />
+                기존에 콜백함수를 이용해서 비동기처리를 하였는데,<br />
+                $.ajax("http://api.newscatcher.com/v2/search", (result) =>{console.log(result);};) <br />
+                위의 코드와 같은 방식이라면 url이 호출이 되고, 결과가 나오면 두번째 매개변수인 콜백함수를 불러서 <br />
+                result에 결과값을 넘겨줬었다. 이렇게 하면 가독성이 많이 떨어진다. (잘 알고 잇는 콜백지옥...) <br />
+                함수 안에 함수, 그 안에 또 함수, 또 함수, 함수 함수 함수 ... 콜백지옥이란 이런 것이다. <br />
+                그래서 나온게 Promise다. <br />
+                function delayP(sec){<br />
+                &nbsp;&nbsp;return new Promise((resolve,reject) => { <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;setTimeout(() => { <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve("success"); <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;}, sec * 1000); <br />
+                &nbsp;&nbsp;});<br />
+                } <br />
+                new Promise를 이용해서 promise를 생성하고, promise 안에서는 resolve와 reject 함수를 자동으로 가진다. <br />
+                resolve는 결과가 문제없이 성공적으로 수행될 때 호출하는 함수, <br />
+                reject는 중간에 에러가 나면 에러를 처리할 수 있는 함수이다. <br />
+                resolve가 호출이 되면 악마적인 콜백 대신에 .then()이나 async / await를 이용해서 <br />
+                그 결과값을 받아내서 다른 일들일 할 수 있다.
+                <!-- &nbsp; 뛰워쓰기 2칸 이상 못하기 때문에 띄워쓰기를 이스케이프 문자로 사용 -->
+            </li>
+            <li>
+                <h3>async / await</h3>
+                async와 await은 동기적인 자바스크립트를 비동기적으로 처리하기 위해서 쓴다. <br />
+                fetch는 promise를 리턴한다. 그리고 우리가 필요한건 그 promise 속에서 api 호출이 잘 이루어져 <br />
+                데이터를 받은 다음, promise가 성공적으로 resolve 호출하기를 기다리는 것이다. <br />
+                이걸 해주는게 await이다. <br />
+                await이 없으면 그냥 날 것 그대로의 promise가 리턴이 된다. <br />
+                await을 쓰려면 함수를 async로 선언해줘야 한다. 즉 둘은 세트라고 생각하면 된다. <br />
+                그 외에도 async로 함수를 선언하면, 그 함수는 자동으로 promise를 반환한다. <br />
+                위의 말의 뜻은 또 이 함수를 받아다가 다른 비동기 작업이 가능하다는 이야기가 된다. <br />
+            </li>
+            <li>
+                <h3>json</h3>
+                서버 클라이언트 통신에서 많이 쓰이는 데이터 타입(png, jpg 뭐 이런거랑 같이 그냥 데이터 타입이다.) <br />
+                객체랑 똑같이 생긴 텍스트라고 이해하면 좋다. <br />
+                간단한 텍스트인데 객체랑 똑같아서 나중에 읽어오기도 매우 편하다. <br />
+                그래서 json 타입을 서버통신시에 많이 사용한다.
+            </li>
+            <li>
+                <h3>fetch를 사용할 때의 패턴</h3>
+                let response = await fetch(url) <br />
+                let data = await response.json() <br />
+                위에 쓰인 패턴은 세트로 많이 사용되니까 익숙해지면 좋다.
+            </li>
+            <li>
+                <h2>하... 쌤 저는 뭐가 뭔소리인지 하나도 모르겠습니다...하 ....라면</h2>
+                <h3>API를 호출하고 싶을때</h3>
+                const callAPI = async() => {<br />
+                &nbsp;&nbsp;&nbsp;&nbsp; let url = new URL(`url주소`) <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; let header = new Headers({헤더 내용}) <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; let response = await fetch (url , {headers : header}) <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; let data= await response.json() <br />
+                }
+            </li>
+            <li>
+                <h2>호이스팅 (재방송...)</h2>
+                function과 var로 선언된 함수와 변수는 호이스팅이 된다. 메모리 힙에 미리 저장이 되어있게 된다. <br />
+                따라서 순서와 상관없이 아무데서나 부르면 호출이 가능했었지만... 일반 상식적으로는 말이 안되는 거긴 하다. <br />
+                그래서 이를 문제 삼아 나온게 let, const이다. 선언시 호이스팅이 되어서 메모리 힙에 가 있기는 하지만, <br />
+                정의가 된 부분에 도달하기 전까지는 TDZ(일시적 사각지대, Temporal Dead Zone)를 만들어서 접근을 제한한다. <br />
+                화살표 함수도 let, const를 사용하여 정의한 함수이기 때문에 TDZ의 적용을 받게 된다. <br />
+                <br />
+                <h3>getByNewsByKeyword 관련 내용</h3>
+                "지난번에 addEventListener('click'(event)=> getByNewsTopic(event))는 왜 된건가여?"라고 질문할 수 있는데 <br />
+                지금 이야기 하는 getByNewsByKeyword는 토픽과는 다르게 본인이 바로 불려진게 아니라 익명의 함수 안에 들어가 있는 모양이기 때문에 <br />
+                즉, addEventListener('click'(event)=> getByNewsTopic(event))를 실행할 때에는, 함수가 바로 쓰여진게 아니라, 익명의 함수를 쓴거기 때문에 에러가 나지 않앗음 <br />
+                그리고 클릭을 할 때에는 이미 코드를 한번 쫙! 처음부터 끝까지 실행을 돌린 상태이기 때문에 토픽에 접근이 가능한 것이었음 <br />
+                addEventListener('click'(event)=> getByNewsByKeyword)의 경우에는 이부분의 코드 실행시에 getByNewsByKeyword가 직접적으로 호출이 되었기 때문에, <br />
+                함수 정의부분보다 위쪽에 있다면 접근이 불가능 해지는 것<br />
+                <br />
+                <h3>화살표 함수는 정의 전에 호출 할 수 없다. 순서가 매우 중요하다.</h3>
+            </li>
+            <li>
+                <h2>코드 리펙토링</h2>
+                코드를 짜면 가장 중요한건 일단 모로가나 서울로 가는거 작동되는게 가장 중요하지만, 이왕이면 좀 더 깔끔하고, 세련되고 코드를 짜는게 좋다고 할 수 있다. 그래야지 코드의 유지보수, 확장이
+                쉽습니다. 코드 작성의 기본 원칙 두가지, 코드의 안전성과 코드의 확장성 확보! <br />
+                <br />
+                코드 리팩토링이 필요한 경우 : 중복되는 코드, 긴 함수 등등이 있다. <br />
+                함수는 한가지 일만 하도록 짜여져 있는 것이 좋고, 3번 이상 중복이 되거나, 다른 곳에서 많이 쓰여지는 코드는 묶어서 하나의 함수로 하는 것이 좋다.
+                <br />
+                <br />
+                예제<br />
+                우리 프론트반의 가전회사 시스템에는 코드가 아래와 같이 작성이 되어있다.
+                <br />
+                const buyTV = () =>{<br />
+                &nbsp;&nbsp;&nbsp;&nbsp; console.log("TV구매 감사드립니다.") <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; console.log("프론트반 가전에 와주셔서 감사하고 항상 건강하세요!") <br />
+                } <br />
+                const buyAC = () =>{<br />
+                &nbsp;&nbsp;&nbsp;&nbsp; console.log("TV구매 감사드립니다.") <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; console.log("프론트반 가전에 와주셔서 감사하고 항상 건강하세요!") <br />
+                } <br />
+                const buyCellphone = () =>{<br />
+                &nbsp;&nbsp;&nbsp;&nbsp; console.log("TV구매 감사드립니다.") <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; console.log("프론트반 가전에 와주셔서 감사하고 항상 건강하세요!") <br />
+                } <br />
+                <br />
+                어느날, 프론트반 가전회사가 망하고... 다시 주니어개발자 가전으로 회사의 이름을 바꾸게 되었다. <br />
+                그럼 모든 코드에 프론트반을 주니어 개발자로 바꾸어야 하는데, 지금 눈에 보이는 제품은 3개가 끝인데, 만약 확장이 잘되서 100개 10억개의 제품군이 생겨난다면 그리고 다시 회사의 이름이
+                시니어 개발자 가전으로 바뀌어진다면??? 그럼 10억군데가 넘는 이름을 하나하나 바꾸어야 할까? 실수로 오타라도 낸다면? <br />
+                상상만해도 끔찍한 상황이 아닐 수 없다. 이런 코드는 유지보수가 매우매우 힘들고, 무엇인가 확장하기도 어렵다. 그래서 우리는 리펙토링해야한다.
+                <br />
+                <br />
+                const greedMessage = () =>{<br />
+                &nbsp;&nbsp;&nbsp;&nbsp; console.log("프론트반 가전에 와주셔서 감사하고 항상 건강하세요!") <br />
+                } <br />
+                const buyTV = () =>{<br />
+                &nbsp;&nbsp;&nbsp;&nbsp; console.log("TV구매 감사드립니다.") <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; greedMessage() <br />
+                } <br />
+                const buyAC = () =>{<br />
+                &nbsp;&nbsp;&nbsp;&nbsp; console.log("TV구매 감사드립니다.") <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; greedMessage() <br />
+                } <br />
+                const buyCellphone = () =>{<br />
+                &nbsp;&nbsp;&nbsp;&nbsp; console.log("TV구매 감사드립니다.") <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; greedMessage() <br />
+                } <br />
+                위와 같은 식으로 코드를 바꾸면, 회사 이름이 바뀌어도 greedMessage() 딱 한군데만 코드를 바꿔주면 된다. <br />
+                또한 제품군이 늘어나더라도, 간단하게 greedMessage()만 추가해주면 모든 제품군이 오타없이 같은 메세지를 보여줄 수 있게 된다.
+            </li>
+            <li>
+                <h2>try / catch</h2>
+                개발자의 기초 소양 중에 하나이다... 미리 에러가 나올만한 상황을 예측해서 에러 핸들링을 적절하게 해주는 것이 유저에 대한 예의... <br />
+                try{<br />
+                &nbsp;&nbsp;&nbsp;&nbsp; 에러가 발생될 수 있는 코드를 입력...<br />
+                } catch(error){<br />
+                &nbsp;&nbsp;&nbsp;&nbsp; 에러 핸들링<br />
+                }<br />
+                1. try문 안에 있는 코드를 실행하다가 에러가 나면<br />
+                2. catch 블럭 안에 들어가서 에러를 실행<br />
+                3. 에러가 없다면 catch 블럭을 무시하고 넘어간다.<br />
+                4. tey / catch는 오직 런타임 에러에만 동작한다. 즉, 실행가능한 코드에만 try/ catch가 사용될 수 있다.<br />
+                5. 만약에 {} 중괄호 짝이 안맞다던지 등등의 문법적인 에러로 돌어가지 않는 코드라면 try / catch가 동작할 수 있다.<br />
+            </li>
+            <li>
+                <h2>에러 객체 Error</h2>
+                try에서 에러가 생기면 catch 블럭에 error 정보를 error 객체 안에 넣어서 매개변수로 전달해 준다. Error 객체를 살펴보면 안에 name, message 등 여러 이용가능한 속성값이 있지만, 에러를
+                보기위해서는 Error.message 만 기억해도 좋다.
+            </li>
+            <li>
+                <h2>API 응답에서 에러가 났는지 확인하는 방법</h2>
+                1. response.status 를 통해서 아는 방법 : 주로 디테일하게 어떤 종류의 에러인지 에러 코드를 보내준다. (400, 401 등등) <br />
+                2. response.ok 를 보는 방법 : ok가 true면 정상, false면 비정상. 자세한 코드는 나타나지 않는다. <br />
+                3. 응답에 따라서 throw를 이용해서 내가 보여주고 싶은 메세지와 함꼐 에러를 catch로 던질 수 있다. <br />
+                4. 그 외에 내가 에러를 발생시키고 싶은 상황이 있다면, throw를 통해서 강제로 에러를 던질수도 있다. <br />
+            </li>
+        </ul>
+        <script>
+            // console.log(1);
+            // setTimeout(() => {
+            //   console.log(2);
+            // }, 2000);
+            // console.log(3);
+            // stack 자바 스크립트에서 작업하는 공간 (스레드- 자바 스크립트는 스택이 하나라 싱글 스레드)
+            // console.log(1)이 stack에 쌓였다가 실행되면 stack에서 사라지고 setTimeout은 오래 걸리니 대기실에서 기다림 console.log(3) 실행되고 사라진 뒤 stack이 한가해진 뒤
+            // setTimeout queue에서 실행
+            // 순차적으로 한가지씩 실행 -> 동기적인 언어
+            // 자바스크립트 비동기적으로 보일 수 있지만 동기적인 언어
+
+            // setTimeout()    :   스텍에 들어오자마자 바로 백그라운드(대기실)로 보낸다.
+            // ajax            :   에이젝스 포함, 데이터를 받아야 하는 친구들도 대기실로 보내진다.
+            //addEventListener :   클릭, 오버, 키다운... 언제 동작을 할지 모르기 때문에 바로 백그라운드로 보냄
+
+            //   1. url을 준비한다.
+            //   2. 헤더를 준비한다.
+            //   3. 서버에 요청한다. (시간이 걸리기 때문에 백그라운드로 보냄)
+            //   4. 데이터를 보여준다. (데이터를 받아야하기 때문에 3번을 기다려야함)
+            //      -> async  :   비동기
+            //         await   :   대기
+
+            /* 에러 핸들링 */
+            try {
+                let height = 170;
+                console.log('에러가 생기기 전~');
+                if (height < 175) {
+                    throw new Error('너무 작다...'); // new 대문자() 자바스크립트에서 제공해주는 객체
+                }
+                console.log('우어어어어어어~~');
+            } catch (error) {
+                console.log('내가 잡은 에러는 ...', error.message);
+            }
+        </script>
+    </body>
+</html>

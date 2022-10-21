@@ -1,0 +1,65 @@
+@charset 'utf-8';
+.search-input {
+  border-radius: 5px;
+}
+.search-button {
+  border: none;
+  border-radius: 5px;
+  background-color: #000;
+  color: #fff;
+}
+.head-line {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+}
+.head-line svg {
+  max-width: 430px;
+}
+.menus {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+  border-top: 1px solid #ebebeb;
+  border-bottom: 4px double #000;
+  flex-wrap: wrap;
+}
+.menus button {
+  margin: 5px;
+  border: none;
+  background: none;
+}
+.menus button:hover {
+  background-color: beige;
+  border-radius: 5px;
+}
+.news-img-size {
+  max-width: 100%;
+  max-height: 250px;
+}
+/* 부모영역의 100%를 넘지 않겠다 */
+.news {
+  padding: 1em;
+  border-bottom: 2px solid black;
+}
+.col-lg-8 h2 a {
+  text-decoration: none;
+  color: #000;
+}
+.col-lg-8 h2 a:hover {
+  text-decoration: underline;
+  color: mediumblue;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
+.pagination li a {
+  padding: 0.5em;
+  color: #000;
+}
+.pagination li span {
+  background-image: center center;
+  background-size: cover;
+}
